@@ -6,7 +6,7 @@ RUN  apt-get -y update
 RUN  apt-get install -y python3
 RUN  apt-get -y install python3-pip
 RUN  pip3 install urllib3
-RUN  mv ./httpd.conf /etc/httpd.conf
+RUN  mv httpd.conf /etc/httpd.conf
 
 
 ADD . .
