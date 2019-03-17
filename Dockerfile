@@ -2,17 +2,14 @@ FROM ubuntu:16.04
 
 USER root
 
-# Обвновление списка пакетов
-RUN apt-get -y update
+RUN  apt-get -y update
+RUN  apt-get install -y python3
+RUN  apt-get -y install python3-pip
+RUN  pip3 install urllib3
 
-# Установка Python3
-RUN apt-get install -y python3
+ADD . .
 
-# Копируем исходный код в Docker-контейнер
-ADD ./ /var/www/html/
-
-# Запускаем сервер
-CMD python3 /var/www/html/public/main.py -r /var/www/html -n 1
-
-# Объявлем порт сервера
 EXPOSE 80
+
+CMD python3 public/main.py
+
