@@ -1,17 +1,17 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.10
+
+WORKDIR /tmp
+
+COPY . .
 
 RUN  apt-get -y update
 RUN  apt-get install -y python3
 RUN  apt-get -y install python3-pip
 RUN  pip3 install urllib3
 
-COPY ./public /usr/local/python/http-server/public
-COPY ./httpd.conf /etc/httpd.conf
+RUN mv ./httpd.conf /etc/httpd.conf
 
-
-EXPOSE 80
-
-WORKDIR '/usr/local/python/http-server/public'
+WORKDIR /tmp/public
 
 CMD ["/usr/local/bin/python3", "./main.py"]
-
+EXPOSE 80
