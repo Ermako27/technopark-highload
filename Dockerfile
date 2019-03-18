@@ -13,5 +13,5 @@ RUN mv ./httpd.conf /etc/httpd.conf
 
 WORKDIR /tmp/public
 
-CMD ["/usr/local/bin/python3", "./main.py"]
+CMD python3 main.py
 EXPOSE 80
