@@ -26,22 +26,23 @@ class Response:
             self.code = METHOD_NOT_ALLOWED
             return
 
+        # print(req.get_path())
+        filename = os.path.normpath(root_dir + req.get_path())
+        self.code = NOT_FOUND  # не существует файла или дирректории или в пути нет root
 
         self.u = req.get_url()
         if '../' in req.get_url():
             self.code = FORBIDDEN
             return
 
-        filename = os.path.normpath(root_dir + req.get_path())
-        self.code = NOT_FOUND  # не существует файла или дирректории или в пути нет root
+        # print(filename)
+        # print(os.path.join(filename, MAIN_PAGE))
+        # print('-----------------')
 
-        if os.path.commonprefix([filename, root_dir]) != root_dir:  # в пути нет root - /etc/passwd
-            return
-
-        if os.path.isfile(os.path.join(filename, MAIN_PAGE)):
-            filename = os.path.join(filename, MAIN_PAGE)  # в дирректории берем MAIN_PAGE
-        elif os.path.exists(os.path.join(filename)):  # существуют файл или дирректория
+        if os.path.isdir(filename):
             self.code = FORBIDDEN
+        if not os.path.isfile(filename):
+            filename = os.path.join(filename, MAIN_PAGE)
 
         try:
             with open(filename, 'rb') as f:

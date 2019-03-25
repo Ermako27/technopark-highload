@@ -21,9 +21,11 @@ class Server:
         Logger.info('Server start')
         with socket.socket() as sock:
             # чтобы несколько приложений могли «слушать» сокет
+            # SO_REUSEADDR - Разрешает повторное использование локальных адресов (если данная возможность поддерживается используемым протоколом). 
+            # Параметр имеет логическое значение.
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
-            sock.bind(self.address_pair)
-            sock.listen(self.size_queue)
+            sock.bind(self.address_pair) # связываем сокет с хостом 
+            sock.listen(self.size_queue) # максимальное количество подключений в очереди 
             Logger.info('Parent pid: {}'.format(os.getpid()))
 
             for _ in range(self.count_cpu):
@@ -49,7 +51,6 @@ class Server:
                             conn.sendall(response.get_response())
 
                 else:
-
                     self.pid_workers.append(pid)
                     Logger.info('Parent pid: {} Children pid: {}'.format(os.getpid(), pid))
 

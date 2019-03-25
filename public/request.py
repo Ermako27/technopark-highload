@@ -13,15 +13,19 @@ class Request:
         data = req.split('\r\n\r\n')
         data_for_headers = data[0].split('\r\n')
 
+        # print([{elem.split(': ')[0]: elem.split(': ')[1]  # headers
+        #          for elem in data_for_headers[1:]}] + \
+        #        data_for_headers[0].split(' '))
         return [{elem.split(': ')[0]: elem.split(': ')[1]  # headers
                  for elem in data_for_headers[1:]}] + \
                data_for_headers[0].split(' ')  # method, uri, version_protocol
 
     def __parse_url(self, uri):
+        # print('----------------------------------------------')
         full_url = '//' + self.host + uri
         full_url = urlparse(full_url)
-        return full_url.geturl(), \
-               unquote(full_url.path)  # unquote - Replace %xx escapes by their single-character equivalent.
+        # print(full_url.geturl(), unquote(full_url.path), '')
+        return full_url.geturl(), unquote(full_url.path)  # unquote - Replace %xx escapes by their single-character equivalent.
 
     def get_headers(self):
         return self.headers

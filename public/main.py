@@ -11,15 +11,10 @@ from parser_config import load_config
 
 def main():
 
-    # if True:
     config = load_config()
     port = int(config['port'])
     count_cpu = int(config['cpu_limit'])
     document_root = config['document_root']
-    # else:
-    #     port = PORT
-    #     count_cpu = COUNT_CPU
-    #     document_root = ROOT_DIR
 
     Logger.info('\nport: {}\ncount cpu: {} \nroot dir: {} \n'.format(port, count_cpu, document_root))
 
