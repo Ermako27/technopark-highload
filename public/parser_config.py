@@ -5,7 +5,7 @@ def load_config():
         lines = f.read().splitlines()
         for line in lines:
             key, value = line.split(" ")
-            if key in ('port', 'cpu_limit', 'document_root'):
+            if key in ('port', 'cpu_limit' ,'thread_limit', 'document_root'):
                 config[key] = value
                 
         return config
