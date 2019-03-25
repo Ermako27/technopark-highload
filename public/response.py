@@ -26,6 +26,12 @@ class Response:
             self.code = METHOD_NOT_ALLOWED
             return
 
+
+        self.u = req.get_url()
+        if '../' in req.get_url():
+            self.code = FORBIDDEN
+            return
+
         filename = os.path.normpath(root_dir + req.get_path())
         self.code = NOT_FOUND  # не существует файла или дирректории или в пути нет root
 
@@ -40,7 +46,9 @@ class Response:
         try:
             with open(filename, 'rb') as f:
                 content = f.read()
-                self.content = content if req.get_method() == GET else ''
+
+                self.content = content if req.get_method() == GET else b''
+
                 self.content_length = len(content)
                 self.code = OK
         except IOError as e:
@@ -54,14 +62,15 @@ class Response:
         return self.__error()
 
     def __ok(self):
+
         return (
-                   'HTTP/{version} {status}\r\n'
-                   'Server: {server}\r\n'
-                   'Date: {date}\r\n'
-                   'Connection: Close\r\n'
-                   'Content-Length: {content_length}\r\n'
-                   'Content-Type: {content_type}\r\n\r\n'
-               ).format(
+                'HTTP/{version} {status}\r\n'
+                'Server: {server}\r\n'
+                'Date: {date}\r\n'
+                'Connection: Close\r\n'
+                'Content-Length: {content_length}\r\n'
+                'Content-Type: {content_type}\r\n\r\n'
+        ).format(
             version=HTTP_VERSION,
             status=RESPONSE_STATUS.get(self.code),
             server=SERVER_NAME,
@@ -71,11 +80,13 @@ class Response:
         ).encode() + self.content
 
     def __error(self):
+        print('Error', self.code)
         return (
             'HTTP/{version} {status}\r\n'
             'Server: {server}\r\n'
             'Date: {date}\r\n'
-            'Connection: Close\r\n\r\n'
+            'Connection: Close\r\n'
+            'Content-Length: 0\r\n\r\n'
         ).format(
             version=HTTP_VERSION,
             status=RESPONSE_STATUS.get(self.code),

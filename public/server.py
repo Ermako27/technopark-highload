@@ -26,33 +26,32 @@ class Server:
             sock.listen(self.size_queue)
             Logger.info('Parent pid: {}'.format(os.getpid()))
 
-            for i in range(self.count_cpu):
+            for _ in range(self.count_cpu):
+                pid = os.fork()
+
                 # fork в родительский процесс вернет PID дочернего процесса,
                 # а в дочернем процессе переменная pid будет равна нулю
-                self.pid_workers.append(self.makeChild(sock))
 
+                if pid == 0:
+                    Logger.info('Child pid: {}'.format(os.getpid()))
+
+                    while True:
+                        conn, adr = sock.accept()
+                        with conn:
+                            request = conn.recv(self.chunk)
+
+                            if len(request.strip()) == 0:  # empty  request
+                                conn.close()
+                                continue
+
+                            pars_request = Request(request.decode())
+                            response = Response(pars_request, root_dir=self.root_dir)
+                            conn.sendall(response.get_response())
+
+                else:
+
+                    self.pid_workers.append(pid)
+                    Logger.info('Parent pid: {} Children pid: {}'.format(os.getpid(), pid))
 
             for pid in self.pid_workers:
                 os.waitpid(pid, 0)
-
-    def makeChild(self, socket):
-        # fork в родительский процесс вернет PID дочернего процесса,
-        # а в дочернем процессе переменная pid будет равна нулю
-        pid = os.fork()
-        if pid > 0:
-            return pid
-        print(pid)
-        self.childLoop(socket)
-    
-    def childLoop(self, socket):
-        while True:
-            conn, adr = socket.accept()
-            request = conn.recv(self.chunk)
-            if len(request.strip()) == 0:  # empty  request
-                conn.close()
-                continue
-
-
-            pars_request = Request(request.decode())
-            response = Response(pars_request, root_dir=self.root_dir)
-            conn.sendall(response.get_response()) 
