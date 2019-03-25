@@ -1,12 +1,9 @@
-FROM ubuntu:18.10
+FROM python:3.7.2-alpine3.9
 
 WORKDIR /tmp
 
 COPY . .
 
-RUN  apt-get -y update
-RUN  apt-get install -y python3
-RUN  apt-get -y install python3-pip
 RUN  pip3 install urllib3
 
 RUN mv ./httpd.conf /etc/httpd.conf
