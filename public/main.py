@@ -12,7 +12,7 @@ from parser_config import load_config
 def main():
 
     config = load_config()
-    port = int(config['port'])
+    port = 80
     count_cpu = int(config['cpu_limit'])
     document_root = config['document_root']
 
